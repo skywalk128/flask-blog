@@ -5,7 +5,7 @@ from .models import Todo, TodoForm
 @app.route('/')
 def index():
     form = TodoForm()
-    todos = Todo.objects.all()
+    todos = Todo.objects.order_by('-time')
     return render_template("index.html", todos=todos, form=form)#返回模板和所有的todo
 
 @app.route('/add', methods=['POST', ])
@@ -15,7 +15,7 @@ def add():
         content = form.content.data
         todo = Todo(content=content)
         todo.save()
-    todos = Todo.objects.all()
+    todos = Todo.objects.order_by('-time')
     return render_template("index.html", todos=todos, form=form)
 
 @app.route('/done/<string:todo_id>')
@@ -24,7 +24,7 @@ def done(todo_id):
     todo = Todo.objects.get_or_404(id=todo_id)
     todo.status = 1
     todo.save()
-    todos = Todo.objects.all()
+    todos = Todo.objects.order_by('-time')
     return render_template("index.html", todos=todos, form=form)
 
 
@@ -34,7 +34,7 @@ def undone(todo_id):
     todo = Todo.objects.get_or_404(id=todo_id)
     todo.status = 0
     todo.save()
-    todos = Todo.objects.all()
+    todos = Todo.objects.order_by('-time')
     return render_template("index.html", todos=todos, form=form)
 
 @app.route('/delete/<string:todo_id>')
@@ -42,5 +42,5 @@ def delete(todo_id):
     form = TodoForm()
     todo = Todo.objects.get_or_404(id=todo_id)
     todo.delete()
-    todos = Todo.objects.all()
+    todos = Todo.objects.order_by('-time')
     return render_template('index.html', todos=todos, form=form)
